@@ -1,24 +1,61 @@
-#board {
-    height: 136px;
-    width: 136px;
+#controls {
+    width: 500px;
+    margin: auto;
+    text-align: center;
 }
 
 #start-over {
-    display: none;
     font-size: 1.1em;
 }
 
+#meta-board {
+    width: 500px;
+    margin: auto;
+}
+
+.mb-row {
+    width: 500px;
+}
+
+.X {
+    background-color:rgba(255,128,128,0.2);
+}
+.O {
+    background-color:rgba(128,255,128,0.2);
+}
+
+.board {
+    display: inline-block;
+    vertical-align: middle;
+    height: 138px;
+    width: 138px;
+    padding: 10px;
+    border: 2px solid black;
+    line-height: 138px;
+    font-family: "Arial Black";
+    font-size: 80px;
+    text-align: center;
+}
+.board.won * {
+    opacity: 0.5;
+}
+.board.inactive {
+    pointer-events: none;
+    opacity: 0.5;
+    background-color:rgba(0,0,0,0.2);
+}
 
 .row {
     height: 44px;
 }
 .row-1 {
-    border-top: 2px solid black;
-    border-bottom: 2px solid black;
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
 }
 
 .col {
     display: inline-block;
+    vertical-align: middle;
     cursor: pointer;
     height: 44px;
     width: 44px;
@@ -26,18 +63,11 @@
     text-align: center;
     font-family: "Arial Black";
     font-size: 32px;
-    vertical-align: middle;
 }
 .col:hover {
     background-color:rgba(128,128,255,0.2)
 }
 .col-1 {
-    border-left: 2px solid black;
-    border-right: 2px solid black;    
-}
-.col.X {
-    background-color:rgba(255,128,128,0.2);
-}
-.col.O {
-    background-color:rgba(128,255,128,0.2);
+    border-left: 3px solid black;
+    border-right: 3px solid black;    
 }
