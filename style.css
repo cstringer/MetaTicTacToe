@@ -1,7 +1,16 @@
+body {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+}
+
 #controls {
     width: 500px;
     margin: auto;
     text-align: center;
+}
+
+#turn {
+    display: inline-block;
+    width: 75px;
 }
 
 #start-over {
@@ -41,8 +50,8 @@
 }
 .board.inactive {
     pointer-events: none;
-    opacity: 0.5;
-    background-color:rgba(0,0,0,0.2);
+    opacity: 0.333;
+    /*background-color:rgba(0,0,0,0.2);*/
 }
 
 .row {

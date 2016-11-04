@@ -1,5 +1,7 @@
 (function($) {
 
+var metaBoard;
+
 function TTTBoard() {
 	this.board = [
         /* Create a 3x3 matrix to hold both
@@ -18,7 +20,6 @@ TTTBoard.prototype = {
 };
 
 $(document).ready(function() {
-    var metaBoard;
 
     init();
 
@@ -46,6 +47,7 @@ $(document).ready(function() {
         }
 
         $('#meta-board').hide().fadeIn('slow');
+        updateControls();
     }
 
     $('#meta-board').on('click', '.col', function() {
@@ -93,6 +95,7 @@ $(document).ready(function() {
             $('#meta-board').find('.board').removeClass('inactive');
         }
         metaBoard.turn++;
+        updateControls();
     });
 
     $('#start-over').on('click', function() {
@@ -100,6 +103,10 @@ $(document).ready(function() {
         init();
     });
 });
+
+function updateControls() {
+    $('#turn .player').text((metaBoard.turn % 2) ? 'X' : 'O');
+}
 
 function buildBoard(boardNum) {
 	var ri, $rowDiv, ci;
