@@ -1,0 +1,43 @@
+#board {
+    height: 136px;
+    width: 136px;
+}
+
+#start-over {
+    display: none;
+    font-size: 1.1em;
+}
+
+
+.row {
+    height: 44px;
+}
+.row-1 {
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.col {
+    display: inline-block;
+    cursor: pointer;
+    height: 44px;
+    width: 44px;
+    line-height: 44px;
+    text-align: center;
+    font-family: "Arial Black";
+    font-size: 32px;
+    vertical-align: middle;
+}
+.col:hover {
+    background-color:rgba(128,128,255,0.2)
+}
+.col-1 {
+    border-left: 2px solid black;
+    border-right: 2px solid black;    
+}
+.col.X {
+    background-color:rgba(255,128,128,0.2);
+}
+.col.O {
+    background-color:rgba(128,255,128,0.2);
+}
