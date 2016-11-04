@@ -23,11 +23,15 @@ $(document).ready(function() {
     function init() {
         var ri, ci, tttBoard, $mbRow;
 
+        // create a "board of boards"
         metaBoard = new TTTBoard();
         metaBoard.ended = false;
         metaBoard.turn = 1;
 
         $('#meta-board').empty();
+
+        /* For the meta board, create new DIVs
+         *  and board objects for each mini board */
         for (ri = 0; ri < 3; ri++) {
             $mbRow = $('<div>').addClass('mb-row');
             for (ci = 0; ci < 3; ci++) {
@@ -45,35 +49,44 @@ $(document).ready(function() {
     $('#meta-board').on('click', '.col', function() {
         var colIdx, rowIdx, boardNum, bnMatch, tttBoard, winner;
 
+        // don't handle clicks when the game ends
         if (metaBoard.ended) { return; }
 
+        // get the cell row and column indexes
         colIdx = $(this).data('col');
         rowIdx = $(this).parent().data('row');
 
+        // get the clicked mini board number
         boardNum = $(this).closest('.board').data('boardNum');
         bnMatch = boardNum.match(/^(\d)\-(\d)$/);
         if (!bnMatch.length) { return; }
 
+        // get the TTTBoard object for the mini board
         tttBoard = metaBoard.board[bnMatch[1]][bnMatch[2]];
         if (!tttBoard || tttBoard.metaWin !== null ||
              tttBoard.board[rowIdx][colIdx] !== null) { return; }
 
+        // put an X or O in the mini board cell, depending on whose turn it is
         tttBoard.board[rowIdx][colIdx] = (metaBoard.turn % 2) ? 'X' : 'O';
         tttBoard.updateBoard();
 
-        metaBoard.turn++;
-        metaBoard.nextBoardNum = rowIdx + '-' + colIdx;
-        $('#meta-board').find('.board')
-                            .removeClass('inactive')
-                        .not('.board-' + metaBoard.nextBoardNum)
-                            .addClass('inactive');
-
+        // determine if mini board is won
         winner = tttBoard.findThreeInARow();
         if (winner) {
             tttBoard.metaWin = winner;
             tttBoard.element.addClass('won' + ' ' + winner)
                             .text(winner);
         }
+
+        //TODO: determine if meta board is won
+
+        // enable the next clickable mini board
+        metaBoard.nextBoardNum = rowIdx + '-' + colIdx;
+        $('#meta-board').find('.board')
+                            .removeClass('inactive')
+                        .not('.board-' + metaBoard.nextBoardNum)
+                            .addClass('inactive');
+        metaBoard.turn++;
     });
 
     $('#start-over').on('click', function() {
@@ -103,6 +116,11 @@ function buildBoard(boardNum) {
 
 function updateBoard() {
 	var ri, ci, mark;
+    
+    /* Step through the board matrix, and
+     *  check the stored value in each cell
+     *  If it's an X or O, mark it: set the text
+     *   of the cell, and set it as a class */
     for (ri = 0; ri < 3; ri++) {
     	for (ci = 0; ci < 3; ci++) {
         	mark = /(X|O)/.test(this.board[ri][ci]) ? this.board[ri][ci] : '';
