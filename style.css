@@ -2,8 +2,18 @@ body {
     font-family: Verdana, Helvetica, Arial, sans-serif;
 }
 
+h1 {
+    text-align:center;
+    color: #999;
+    font-size: 24px;
+    text-shadow: 1px 1px 0px #222;
+}
+h1 sup {
+    font-size: 14px;
+}
+
 #controls {
-    width: 500px;
+    width: 486px;
     margin: auto;
     text-align: center;
 }
@@ -18,8 +28,9 @@ body {
 }
 
 #meta-board {
-    width: 500px;
-    margin: auto;
+    width: 486px;
+    margin: 0 auto 1.5em;
+    box-shadow: 1px 1px 5px #aaa;
 }
 
 .mb-row {
@@ -44,6 +55,9 @@ body {
     font-family: "Arial Black";
     font-size: 80px;
     text-align: center;
+}
+.board:hover {
+    background-color:rgba(128,128,255,0.2)
 }
 .board.won * {
     opacity: 0.5;
