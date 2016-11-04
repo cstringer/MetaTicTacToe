@@ -55,8 +55,8 @@ $(document).ready(function() {
         if (!bnMatch.length) { return; }
 
         tttBoard = metaBoard.board[bnMatch[1]][bnMatch[2]];
-        if (!tttBoard || tttBoard.metaWin !== null) { return; }
-
+        if (!tttBoard || tttBoard.metaWin !== null ||
+             tttBoard.board[rowIdx][colIdx] !== null) { return; }
 
         tttBoard.board[rowIdx][colIdx] = (metaBoard.turn % 2) ? 'X' : 'O';
         tttBoard.updateBoard();
