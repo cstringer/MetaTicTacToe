@@ -2,12 +2,14 @@
 
 function TTTBoard() {
 	this.board = [
+        /* Create a 3x3 matrix to hold both
+         *  a meta board, and each mini board */
         [null,null,null],
         [null,null,null],
         [null,null,null]
 	];
-    this.element = null;
-    this.metaWin = null;
+    this.element = null;        // jQuery element of .board DIV
+    this.metaWin = null;        // 'X' or 'O' if this mini board is won
 }
 TTTBoard.prototype = {
 	buildBoard: buildBoard,
@@ -23,7 +25,7 @@ $(document).ready(function() {
     function init() {
         var ri, ci, tttBoard, $mbRow;
 
-        // create a "board of boards"
+        // create an object to hold the "board of boards"
         metaBoard = new TTTBoard();
         metaBoard.ended = false;
         metaBoard.turn = 1;
@@ -82,14 +84,19 @@ $(document).ready(function() {
 
         // enable the next clickable mini board
         metaBoard.nextBoardNum = rowIdx + '-' + colIdx;
-        $('#meta-board').find('.board')
-                            .removeClass('inactive')
-                        .not('.board-' + metaBoard.nextBoardNum)
-                            .addClass('inactive');
+        if (!$('.board-' + metaBoard.nextBoardNum).hasClass('won')) {
+            $('#meta-board').find('.board')
+                                .removeClass('inactive')
+                            .not('.board-'  + metaBoard.nextBoardNum)
+                                .addClass('inactive');
+        } else {
+            $('#meta-board').find('.board').removeClass('inactive');
+        }
         metaBoard.turn++;
     });
 
     $('#start-over').on('click', function() {
+        // reset things!
         init();
     });
 });
@@ -97,9 +104,15 @@ $(document).ready(function() {
 function buildBoard(boardNum) {
 	var ri, $rowDiv, ci;
 
+    /* Create a .board div, add unique classes and boardNum data
+     *  and store it in the current instance element property */
     this.element  = $('<div>').addClass('board board-' + boardNum)
                        .data('boardNum', boardNum);
 
+    /* For the board matrix, first build a 'row' DIV,
+     *  setting a data-row property and row classes;
+     *  then, for each 'cell', append a SPAN and set
+     *  data-col property and classes.  */
     for (ri = 0; ri < 3; ri++) {
 		$rowDiv = $('<div>').data('row', ri)
                             .addClass('row row-' + ri);
@@ -118,9 +131,9 @@ function updateBoard() {
 	var ri, ci, mark;
     
     /* Step through the board matrix, and
-     *  check the stored value in each cell
-     *  If it's an X or O, mark it: set the text
-     *   of the cell, and set it as a class */
+     *  check the stored value in each cell -
+     *  if it's an X or O, mark it: set the text
+     *  of the cell, and set it as a class */
     for (ri = 0; ri < 3; ri++) {
     	for (ci = 0; ci < 3; ci++) {
         	mark = /(X|O)/.test(this.board[ri][ci]) ? this.board[ri][ci] : '';
@@ -166,8 +179,8 @@ function findThreeInARow() {
     }
 
     winFound = (this.board[0][2] !== null)  &&
-           (this.board[0][2] === this.board[1][1]) &&
-           (this.board[0][2] === this.board[2][0]);             
+               (this.board[0][2] === this.board[1][1]) &&
+               (this.board[0][2] === this.board[2][0]);             
     if (winFound) {
         return this.board[0][2];
     } else {
