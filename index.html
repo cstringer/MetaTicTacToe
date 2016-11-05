@@ -3,23 +3,25 @@
     <head>
         <meta charset="utf-8">
         <title>MetaTicTacToe</title>
-        <link rel="stylesheet" href="style.css">
-        <script src="jquery-3.1.1.min.js"></script>
-        <script src="metaTicTacToe.js"></script>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/metaTicTacToe.js"></script>
     </head>
 
     <body>
 
-        <h1>MT<sup><u>3</u></sup></h1>
+        <div id="controls">
+			<div id="title">MT<sup><u>3</u></sup></div>
+            <div id="turn">
+                Turn: <span id="turn-player">&nbsp;</span>
+            </div>
+            <button id="undo-move">Undo Move</button>
+            <button id="start-over">Start Over</button>
+            <button id="zoom-in">Zoom +</button>
+            <button id="zoom-out">Zoom &ndash;</button>
+        </div>
 
         <div id="meta-board"></div>
-
-        <div id="controls">
-            <div id="turn">
-                Turn: <span class="player">&nbsp;</span>
-            </div>
-            <button id="start-over">Start Over</button>
-        </div>
 
     </body>
 

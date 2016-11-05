@@ -1,0 +1,20 @@
+{
+  "name": "MT3",
+  "version": "1.0.1",
+  "description": "MT3 - Meta TicTacToe",
+  "main": "Gruntfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-less": "^1.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cstringer/MetaTicTacToe.git"
+  },
+  "author": "Chris Stringer",
+  "license": "GPL"
+}

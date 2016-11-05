@@ -1,26 +1,35 @@
 (function($) {
 
+	/* Global config */
     var gConfig = {
             sels: {
-                metaBoard: '#meta-board'
-            }
+                metaBoard:  '#meta-board',
+				startOver:  '#start-over',
+				undoMove:   '#undo-move',
+				turnPlayer: '#turn-player',
+				zoomIn: 	'#zoom-in',
+				zoomOut: 	'#zoom-out'
+            },
+			fadeInTime:	500
         },
+
         metaBoard;
 
     function TTTBoard() {
         this.board = [
-            /* Create a 3x3 matrix to hold either
+            /* 3x3 matrix to hold either
              *  a meta or mini board */
             [null,null,null],
             [null,null,null],
             [null,null,null]
         ];
-        this.element = null;        // jQuery element of .board DIV
-        this.metaWin = null;        // 'X' or 'O' if this mini board is won
+        this.element = null;   // jQuery element of associated DIV
     }
     TTTBoard.prototype = {
         buildBoard: buildBoard,
         updateBoard: updateBoard,
+		getCell: getCell,
+		setCell: setCell,
         findThreeInARow: findThreeInARow
     };
 
@@ -31,12 +40,13 @@
         function init() {
             var ri, ci, tttBoard, $mbRow;
 
-            // create an object to hold the "board of boards"
+            /* Create an object to hold the "board of boards",
+			 *  set initial values and get its DOM element */
             metaBoard = new TTTBoard();
-            metaBoard.element = $(gConfig.sels.metaBoard);
+            metaBoard.wins = new TTTBoard();
             metaBoard.ended = false;
             metaBoard.turn = 1;
-
+            metaBoard.element = $(gConfig.sels.metaBoard);
             metaBoard.element.empty();
 
             /* For the meta board, create new DIVs
@@ -47,17 +57,20 @@
                     tttBoard = new TTTBoard();
                     tttBoard.buildBoard(ri + '-' + ci);
                     $mbRow.append(tttBoard.element);
-                    metaBoard.board[ri][ci] = tttBoard;
+                    metaBoard.setCell(ri, ci, tttBoard);
                 }
                 metaBoard.element.append($mbRow);
             }
 
-            metaBoard.element.hide().fadeIn('slow');
+			/* Show the board ang get the party started */
+            metaBoard.element.hide().fadeIn(gConfig.fadeInTime);
             updateControls();
         }
 
         $(gConfig.sels.metaBoard).on('click', '.col', function() {
-            var colIdx, rowIdx, boardNum, bnMatch, tttBoard, winner;
+            var colIdx, rowIdx,
+				boardNum, bnMatch, mbRow, mbCol,
+				tttBoard, miniWinner, mbWon;
 
             // don't handle clicks when the game ends
             if (metaBoard.ended) { return; }
@@ -70,25 +83,39 @@
             boardNum = $(this).closest('.board').data('boardNum');
             bnMatch = boardNum.match(/^(\d)\-(\d)$/);
             if (!bnMatch.length) { return; }
+			mbRow = +bnMatch[1];
+			mbCol = +bnMatch[2];
 
             // get the TTTBoard object for the mini board
-            tttBoard = metaBoard.board[bnMatch[1]][bnMatch[2]];
-            if (!tttBoard || tttBoard.metaWin !== null ||
-                 tttBoard.board[rowIdx][colIdx] !== null) { return; }
+            tttBoard = metaBoard.board[mbRow][mbCol];
+            if (!tttBoard || tttBoard.board[rowIdx][colIdx] !== null) { return; }
 
             // put an X or O in the mini board cell, depending on whose turn it is
-            tttBoard.board[rowIdx][colIdx] = getPlayerForTurn();
+            tttBoard.setCell(rowIdx, colIdx, getPlayerForTurn());
             tttBoard.updateBoard();
 
             // determine if mini board is won
-            winner = tttBoard.findThreeInARow();
-            if (winner) {
-                tttBoard.metaWin = winner;
-                tttBoard.element.addClass('won' + ' ' + winner)
-                                .text(winner);
+            miniWinner = tttBoard.findThreeInARow();
+            if (miniWinner) {
+                metaBoard.wins.setCell(mbRow, mbCol, miniWinner);
+                tttBoard.element.addClass('won' + ' ' + miniWinner)
+                                .text(miniWinner);
             }
 
-            //TODO: determine if meta board is won
+            // determine if meta board is won
+			mbWon = metaBoard.wins.findThreeInARow();
+			if (mbWon) {
+				metaBoard.ended = true;
+				// set classes on won boards
+				$(metaBoard.element).find('.board')
+										.removeClass('inactive')
+									.not('.won.' + mbWon)
+										.addClass('inactive');
+				// show a win message
+				alert('And the winner is... ' + mbWon + '!!!');
+				$(gConfig.sels.undoMove).prop('disabled', true);
+				return;
+			}			
 
             // enable the next clickable mini board
             metaBoard.nextBoardNum = rowIdx + '-' + colIdx;
@@ -100,18 +127,51 @@
             } else {
                 $(gConfig.sels.metaBoard).find('.board').removeClass('inactive');
             }
+
+			metaBoard.lastBoard = tttBoard;
+			metaBoard.lastRowIdx = rowIdx;
+			metaBoard.lastColIdx = colIdx;
+
             metaBoard.turn++;
             updateControls();
         });
 
-        $('#start-over').on('click', function() {
-            // reset things!
-            init();
+        $(gConfig.sels.startOver).on('click', function() {
+			if (window.confirm('Start new game?')) {
+				init();
+			}
         });
 
-				$(window).on('beforeunload', function() {
-					return 'Are you sure?';
-				});
+		//TODO: undo last move!?!
+		$(gConfig.sels.undoMove).on('click', function() {
+			var ri = metaBoard.lastRowIdx,
+				ci = metaBoard.lastColIdx;
+			metaBoard.turn--;
+			metaBoard.lastBoard.setCell(ri, ci, null);
+			metaBoard.lastBoard.updateBoard();
+			//TODO: must reset board state!
+			updateControls();
+		});
+
+		$(gConfig.sels.zoomIn).on('click', function() {
+			setZoom('zoom-in');
+		});
+		$(gConfig.sels.zoomOut).on('click', function() {
+			setZoom('zoom-out');
+		});
+		function setZoom(mode) {
+			if (!/^zoom\-(in|out)$/.test(mode)) { return; }
+			var removeMode = (mode === 'zoom-in') ? 'zoom-out' : 'zoom-in';
+			if (metaBoard.element.hasClass(removeMode)) {
+				metaBoard.element.removeClass(removeMode);
+			} else {
+				metaBoard.element.addClass(mode);
+			}
+		}
+
+		$(window).on('beforeunload', function() {
+			return 'Are you sure you want to leave?';
+		});
     });
 
     function getPlayerForTurn() {
@@ -119,9 +179,13 @@
     }
 
     function updateControls() {
-        $('#turn .player').text(getPlayerForTurn());
-        $('#start-over').attr('disabled', metaBoard.turn === 1 ? true : false);
+        $(gConfig.sels.turnPlayer).text(getPlayerForTurn());
+        $(gConfig.sels.undoMove).attr('disabled', (metaBoard.turn === 1));
+        $(gConfig.sels.startOver).attr('disabled', (metaBoard.turn === 1));
     }
+
+
+	/*==== TTTBoard ====*/
 
     function buildBoard(boardNum) {
         var ri, $rowDiv, ci;
@@ -160,11 +224,30 @@
             for (ci = 0; ci < 3; ci++) {
                 mark = /(X|O)/.test(this.board[ri][ci]) ? this.board[ri][ci] : '';
                 $(this.element).find('.row-' + ri + ' .col-' + ci)
+							   .removeClass('X O')
                                .text(mark)
                                .addClass(mark);
             }
         }
+		return this;
     }
+
+	function getCell(ri, ci) {
+		var retval = null;
+		if ((ri >= 0 && ri < this.board.length) &&
+			(ci >= 0 && ci < this.board[ri].length)) {
+			retval = this.board[ri][ci];
+		}
+		return retaval;
+	}
+
+	function setCell(ri, ci, mark) {
+		if ((ri >= 0 && ri < this.board.length) &&
+			(ci >= 0 && ci < this.board[ri].length)) {
+			this.board[ri][ci] = mark;
+		}
+		return this;
+	}
 
     function findThreeInARow() {
         var winFound,
@@ -176,7 +259,9 @@
         // 1. if all items in row have equal nonnull values, it's a win
         for (rowIdx = 0; rowIdx < 3; rowIdx++) {
             row = this.board[rowIdx];
-            winFound = (row[0] !== null) && (row[0] === row[1]) && (row[0] === row[2]);
+            winFound = (row[0] !== null) &&
+					   (row[0] === row[1]) &&
+					   (row[0] === row[2]);
             if (winFound) {
                 return row[0];
             }
