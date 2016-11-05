@@ -5,6 +5,8 @@ html, body {
     font-family: Verdana, Helvetica, Arial, sans-serif;
 }
 
+/*=== Controls ===*/
+
 #controls {
 	left: 0;
 	top: 0;
@@ -15,7 +17,7 @@ html, body {
 
 	#title {
 		display: inline-block;
-		float: left;
+		vertical-align: middle;
 		margin: 0;
 		padding: 0;
 		color: #999;
@@ -29,9 +31,14 @@ html, body {
 
 	#turn {
 		display: inline-block;
+		vertical-align: middle;
 		min-width: 75px;
+		font-size: 8px;
 		#turn-player {
+			display: inline-block;
+			vertical-align: middle;
 			font-weight: bold;
+			font-size: 24px;
 		}
 	}
 
@@ -40,12 +47,18 @@ html, body {
 	}
 }
 
+
+/*=== Players ====*/
+
 .X {
     background-color:rgba(255,128,128,0.2);
 }
 .O {
     background-color:rgba(128,255,128,0.2);
 }
+
+
+/*=== Boards ===*/
 
 #meta-board {
     width: 486px;
@@ -72,8 +85,8 @@ html, body {
     padding: 10px;
     border: 2px solid black;
     line-height: 138px;
-    font-family: "Arial Black";
     font-size: 80px;
+	font-weight: 700;
     text-align: center;
 	&:not(.won):hover {
 		background-color:rgba(128,128,255,0.2)
@@ -104,8 +117,8 @@ html, body {
 		width: 44px;
 		line-height: 44px;
 		text-align: center;
-		font-family: "Arial Black";
 		font-size: 32px;
+		font-weight: 700;
 		&:hover {
 			background-color:rgba(128,128,255,0.2)
 		}
