@@ -56,10 +56,11 @@ h1 sup {
     font-size: 80px;
     text-align: center;
 }
-.board:hover {
+.board:not(.won):hover {
     background-color:rgba(128,128,255,0.2)
 }
 .board.won * {
+		pointer-events: none;
     opacity: 0.5;
 }
 .board.inactive {
