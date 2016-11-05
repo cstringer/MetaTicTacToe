@@ -108,6 +108,10 @@
             // reset things!
             init();
         });
+
+				$(window).on('beforeunload', function() {
+					return 'Are you sure?';
+				});
     });
 
     function getPlayerForTurn() {
