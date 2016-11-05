@@ -1,16 +1,16 @@
 (function($) {
 
-	/* Global config */
+    /* Global config */
     var gConfig = {
             sels: {
                 metaBoard:  '#meta-board',
-				startOver:  '#start-over',
-				undoMove:   '#undo-move',
-				turnPlayer: '#turn-player',
-				zoomIn: 	'#zoom-in',
-				zoomOut: 	'#zoom-out'
+                startOver:  '#start-over',
+                undoMove:   '#undo-move',
+                turnPlayer: '#turn-player',
+                zoomIn:     '#zoom-in',
+                zoomOut:     '#zoom-out'
             },
-			fadeInTime:	500
+            fadeInTime:    500
         },
 
         metaBoard;
@@ -28,8 +28,8 @@
     TTTBoard.prototype = {
         buildBoard: buildBoard,
         updateBoard: updateBoard,
-		getCell: getCell,
-		setCell: setCell,
+        getCell: getCell,
+        setCell: setCell,
         findThreeInARow: findThreeInARow
     };
 
@@ -41,7 +41,7 @@
             var ri, ci, tttBoard, $mbRow;
 
             /* Create an object to hold the "board of boards",
-			 *  set initial values and get its DOM element */
+             *  set initial values and get its DOM element */
             metaBoard = new TTTBoard();
             metaBoard.wins = new TTTBoard();
             metaBoard.ended = false;
@@ -62,15 +62,15 @@
                 metaBoard.element.append($mbRow);
             }
 
-			/* Show the board ang get the party started */
+            /* Show the board ang get the party started */
             metaBoard.element.hide().fadeIn(gConfig.fadeInTime);
             updateControls();
         }
 
         $(gConfig.sels.metaBoard).on('click', '.col', function() {
             var colIdx, rowIdx,
-				boardNum, bnMatch, mbRow, mbCol,
-				tttBoard, miniWinner, mbWon;
+                boardNum, bnMatch, mbRow, mbCol,
+                tttBoard, miniWinner, mbWon;
 
             // don't handle clicks when the game ends
             if (metaBoard.ended) { return; }
@@ -83,8 +83,8 @@
             boardNum = $(this).closest('.board').data('boardNum');
             bnMatch = boardNum.match(/^(\d)\-(\d)$/);
             if (!bnMatch.length) { return; }
-			mbRow = +bnMatch[1];
-			mbCol = +bnMatch[2];
+            mbRow = +bnMatch[1];
+            mbCol = +bnMatch[2];
 
             // get the TTTBoard object for the mini board
             tttBoard = metaBoard.board[mbRow][mbCol];
@@ -103,19 +103,19 @@
             }
 
             // determine if meta board is won
-			mbWon = metaBoard.wins.findThreeInARow();
-			if (mbWon) {
-				metaBoard.ended = true;
-				// set classes on won boards
-				$(metaBoard.element).find('.board')
-										.removeClass('inactive')
-									.not('.won.' + mbWon)
-										.addClass('inactive');
-				// show a win message
-				alert('And the winner is... ' + mbWon + '!!!');
-				$(gConfig.sels.undoMove).prop('disabled', true);
-				return;
-			}			
+            mbWon = metaBoard.wins.findThreeInARow();
+            if (mbWon) {
+                metaBoard.ended = true;
+                // set classes on won boards
+                $(metaBoard.element).find('.board')
+                                        .removeClass('inactive')
+                                    .not('.won.' + mbWon)
+                                        .addClass('inactive');
+                // show a win message
+                alert('And the winner is... ' + mbWon + '!!!');
+                $(gConfig.sels.undoMove).prop('disabled', true);
+                return;
+            }            
 
             // enable the next clickable mini board
             metaBoard.nextBoardNum = rowIdx + '-' + colIdx;
@@ -128,50 +128,50 @@
                 $(gConfig.sels.metaBoard).find('.board').removeClass('inactive');
             }
 
-			metaBoard.lastBoard = tttBoard;
-			metaBoard.lastRowIdx = rowIdx;
-			metaBoard.lastColIdx = colIdx;
+            metaBoard.lastBoard = tttBoard;
+            metaBoard.lastRowIdx = rowIdx;
+            metaBoard.lastColIdx = colIdx;
 
             metaBoard.turn++;
             updateControls();
         });
 
         $(gConfig.sels.startOver).on('click', function() {
-			if (window.confirm('Start new game?')) {
-				init();
-			}
+            if (window.confirm('Start new game?')) {
+                init();
+            }
         });
 
-		//TODO: undo last move!?!
-		$(gConfig.sels.undoMove).on('click', function() {
-			var ri = metaBoard.lastRowIdx,
-				ci = metaBoard.lastColIdx;
-			metaBoard.turn--;
-			metaBoard.lastBoard.setCell(ri, ci, null);
-			metaBoard.lastBoard.updateBoard();
-			//TODO: must reset board state!
-			updateControls();
-		});
+        //TODO: undo last move!?!
+        $(gConfig.sels.undoMove).on('click', function() {
+            var ri = metaBoard.lastRowIdx,
+                ci = metaBoard.lastColIdx;
+            metaBoard.turn--;
+            metaBoard.lastBoard.setCell(ri, ci, null);
+            metaBoard.lastBoard.updateBoard();
+            //TODO: must reset board state!
+            updateControls();
+        });
 
-		$(gConfig.sels.zoomIn).on('click', function() {
-			setZoom('zoom-in');
-		});
-		$(gConfig.sels.zoomOut).on('click', function() {
-			setZoom('zoom-out');
-		});
-		function setZoom(mode) {
-			if (!/^zoom\-(in|out)$/.test(mode)) { return; }
-			var removeMode = (mode === 'zoom-in') ? 'zoom-out' : 'zoom-in';
-			if (metaBoard.element.hasClass(removeMode)) {
-				metaBoard.element.removeClass(removeMode);
-			} else {
-				metaBoard.element.addClass(mode);
-			}
-		}
+        $(gConfig.sels.zoomIn).on('click', function() {
+            setZoom('zoom-in');
+        });
+        $(gConfig.sels.zoomOut).on('click', function() {
+            setZoom('zoom-out');
+        });
+        function setZoom(mode) {
+            if (!/^zoom\-(in|out)$/.test(mode)) { return; }
+            var removeMode = (mode === 'zoom-in') ? 'zoom-out' : 'zoom-in';
+            if (metaBoard.element.hasClass(removeMode)) {
+                metaBoard.element.removeClass(removeMode);
+            } else {
+                metaBoard.element.addClass(mode);
+            }
+        }
 
-		$(window).on('beforeunload', function() {
-			return 'Are you sure you want to leave?';
-		});
+        $(window).on('beforeunload', function() {
+            return 'Are you sure you want to leave?';
+        });
     });
 
     function getPlayerForTurn() {
@@ -185,7 +185,7 @@
     }
 
 
-	/*==== TTTBoard ====*/
+    /*==== TTTBoard ====*/
 
     function buildBoard(boardNum) {
         var ri, $rowDiv, ci;
@@ -224,30 +224,30 @@
             for (ci = 0; ci < 3; ci++) {
                 mark = /(X|O)/.test(this.board[ri][ci]) ? this.board[ri][ci] : '';
                 $(this.element).find('.row-' + ri + ' .col-' + ci)
-							   .removeClass('X O')
+                               .removeClass('X O')
                                .text(mark)
                                .addClass(mark);
             }
         }
-		return this;
+        return this;
     }
 
-	function getCell(ri, ci) {
-		var retval = null;
-		if ((ri >= 0 && ri < this.board.length) &&
-			(ci >= 0 && ci < this.board[ri].length)) {
-			retval = this.board[ri][ci];
-		}
-		return retaval;
-	}
+    function getCell(ri, ci) {
+        var retval = null;
+        if ((ri >= 0 && ri < this.board.length) &&
+            (ci >= 0 && ci < this.board[ri].length)) {
+            retval = this.board[ri][ci];
+        }
+        return retaval;
+    }
 
-	function setCell(ri, ci, mark) {
-		if ((ri >= 0 && ri < this.board.length) &&
-			(ci >= 0 && ci < this.board[ri].length)) {
-			this.board[ri][ci] = mark;
-		}
-		return this;
-	}
+    function setCell(ri, ci, mark) {
+        if ((ri >= 0 && ri < this.board.length) &&
+            (ci >= 0 && ci < this.board[ri].length)) {
+            this.board[ri][ci] = mark;
+        }
+        return this;
+    }
 
     function findThreeInARow() {
         var winFound,
@@ -260,8 +260,8 @@
         for (rowIdx = 0; rowIdx < 3; rowIdx++) {
             row = this.board[rowIdx];
             winFound = (row[0] !== null) &&
-					   (row[0] === row[1]) &&
-					   (row[0] === row[2]);
+                       (row[0] === row[1]) &&
+                       (row[0] === row[2]);
             if (winFound) {
                 return row[0];
             }
