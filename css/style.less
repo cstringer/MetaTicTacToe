@@ -18,7 +18,7 @@ html, body {
     #title {
         display: inline-block;
         vertical-align: middle;
-        margin: 0;
+        margin: 0 0.25em;
         padding: 0;
         color: #999;
         font-size: 28px;
@@ -26,6 +26,7 @@ html, body {
     }
 
     #title sup {
+        color: #69d;
         font-size: 14px;
     }
 
@@ -33,10 +34,16 @@ html, body {
         display: inline-block;
         vertical-align: middle;
         min-width: 75px;
+        //background-image:linear-gradient(0deg, #ddd, #fff);
+        border: 1px solid #ccc;
+        border-radius: 4px;
         font-size: 8px;
         #turn-player {
             display: inline-block;
             vertical-align: middle;
+            height: 26px;
+            width: 24px;
+            line-height: 24px;
             font-size: 24px;
             font-weight: bold;
         }
@@ -44,6 +51,9 @@ html, body {
 
     button {
         font-size: 1.2em;
+        &:not(:disabled) {
+            cursor: pointer;
+        }
     }
 }
 
@@ -65,14 +75,7 @@ html, body {
     margin: 0 auto 1.5em;
     background-color: white;
     box-shadow: 0px 0px 12px #999;
-
-    &.zoom-in {
-        transform: scale(1.25) translate(0px, 10%);
-    }
-
-    &.zoom-out {
-        transform: scale(0.75) translate(0px, -10%);
-    }
+    transition: transform 80ms linear;
 
     .mb-row {
         width: 500px;
@@ -96,7 +99,7 @@ html, body {
     }
 
     &.won * {
-		pointer-events: none;
+        pointer-events: none;
         opacity: 0.5;
     }
 
