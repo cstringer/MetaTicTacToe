@@ -37,8 +37,8 @@ html, body {
         #turn-player {
             display: inline-block;
             vertical-align: middle;
-            font-weight: bold;
             font-size: 24px;
+            font-weight: bold;
         }
     }
 
@@ -65,9 +65,11 @@ html, body {
     margin: 0 auto 1.5em;
     background-color: white;
     box-shadow: 0px 0px 12px #999;
+
     &.zoom-in {
         transform: scale(1.25) translate(0px, 10%);
     }
+
     &.zoom-out {
         transform: scale(0.75) translate(0px, -10%);
     }
@@ -88,21 +90,24 @@ html, body {
     font-size: 80px;
     font-weight: 700;
     text-align: center;
+
     &:not(.won):hover {
         background-color:rgba(128,128,255,0.2)
     }
+
     &.won * {
-            pointer-events: none;
+		pointer-events: none;
         opacity: 0.5;
     }
+
     &.inactive {
         pointer-events: none;
         opacity: 0.333;
-        /*background-color:rgba(0,0,0,0.2);*/
     }
 
     .row {
         height: 44px;
+
         &.row-1 {
             border-top: 3px solid black;
             border-bottom: 3px solid black;
@@ -112,16 +117,18 @@ html, body {
     .col {
         display: inline-block;
         vertical-align: middle;
-        cursor: pointer;
         height: 44px;
         width: 44px;
+        cursor: pointer;
         line-height: 44px;
         text-align: center;
         font-size: 32px;
         font-weight: 700;
+
         &:hover {
             background-color:rgba(128,128,255,0.2)
         }
+
         &.col-1 {
             border-left: 3px solid black;
             border-right: 3px solid black;    
