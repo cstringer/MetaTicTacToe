@@ -1,0 +1,118 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f3f3f3;
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+}
+/*=== Controls ===*/
+#controls {
+  left: 0;
+  top: 0;
+  width: 100%;
+  margin: 0 auto 1em;
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+  text-align: center;
+}
+#controls #title {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0.25em;
+  padding: 0;
+  color: #999;
+  font-size: 28px;
+  text-shadow: 4px 4px 2px #ddd;
+}
+#controls #title sup {
+  color: #69d;
+  font-size: 14px;
+}
+#controls #turn {
+  display: inline-block;
+  vertical-align: middle;
+  min-width: 75px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 8px;
+}
+#controls #turn #turn-player {
+  display: inline-block;
+  vertical-align: middle;
+  height: 26px;
+  width: 24px;
+  line-height: 24px;
+  font-size: 24px;
+  font-weight: bold;
+}
+#controls button {
+  font-size: 1.2em;
+}
+#controls button:not(:disabled) {
+  cursor: pointer;
+}
+/*=== Players ====*/
+.X {
+  background-color: rgba(255, 128, 128, 0.2);
+}
+.O {
+  background-color: rgba(128, 255, 128, 0.2);
+}
+/*=== Boards ===*/
+#meta-board {
+  width: 486px;
+  margin: 0 auto 1.5em;
+  background-color: white;
+  box-shadow: 0px 0px 12px #999;
+  transition: transform 80ms linear;
+}
+#meta-board .mb-row {
+  width: 500px;
+}
+.board {
+  display: inline-block;
+  vertical-align: middle;
+  height: 138px;
+  width: 138px;
+  padding: 10px;
+  border: 2px solid black;
+  line-height: 138px;
+  font-size: 80px;
+  font-weight: 700;
+  text-align: center;
+}
+.board:not(.won):hover {
+  background-color: rgba(128, 128, 255, 0.2);
+}
+.board.won * {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.board.inactive {
+  pointer-events: none;
+  opacity: 0.333;
+}
+.board .row {
+  height: 44px;
+}
+.board .row.row-1 {
+  border-top: 3px solid black;
+  border-bottom: 3px solid black;
+}
+.board .col {
+  display: inline-block;
+  vertical-align: middle;
+  height: 44px;
+  width: 44px;
+  cursor: pointer;
+  line-height: 44px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+}
+.board .col:hover {
+  background-color: rgba(128, 128, 255, 0.2);
+}
+.board .col.col-1 {
+  border-left: 3px solid black;
+  border-right: 3px solid black;
+}
