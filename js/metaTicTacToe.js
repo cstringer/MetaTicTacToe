@@ -76,7 +76,7 @@
 
         // get/set the jQuery element
         this.element = function(el) {
-            if (el) { element = el; }
+            if (arguments.length) { element = el; }
             return element;
         };
     }
