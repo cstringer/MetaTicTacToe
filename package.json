@@ -3,12 +3,17 @@
 	"version": "1.0.1",
 	"description": "MT3 - Meta TicTacToe",
 	"main": "Gruntfile.js",
-	"dependencies": {},
+	"dependencies": {
+		"jquery": "^3.3.1",
+		"underscore": "^1.8.3"
+	},
 	"devDependencies": {
-		"grunt": "^1.0.1",
-		"grunt-contrib-less": "^1.4.0"
+		"css-loader": "^0.28.9",
+		"style-loader": "^0.20.2",
+		"webpack": "^3.11.0"
 	},
 	"scripts": {
+		"build": "webpack",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
