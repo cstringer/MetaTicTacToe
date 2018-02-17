@@ -10446,6 +10446,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__MT3Board__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__style_css__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__style_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__board_html__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__board_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__board_html__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__controls_html__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__controls_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__controls_html__);
+
+
 
 
 
@@ -10457,6 +10463,9 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(init);
 
 function init() {
   var ri, ci, tttBoard, $mbRow;
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()('body').append(__WEBPACK_IMPORTED_MODULE_5__controls_html___default.a);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()('body').append(__WEBPACK_IMPORTED_MODULE_4__board_html___default.a);
 
   /* Create an object to hold the meta board,
    *  one for the win state of the mini boards,
@@ -11465,6 +11474,18 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = "<div id=\"meta-board\"></div>\n";
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = "<div id=\"controls\">\n\n  <div id=\"title\"><b>M</b>T<sup><i>3</i></sup></div>\n\n  <div id=\"turn\">\n    Turn: <span id=\"turn-player\">&nbsp;</span>\n  </div>\n\n  <button id=\"start-over\">New Game</button>\n\n  <!-- <button id=\"undo-move\">Undo Move</button> -->\n\n  <button id=\"zoom-in\">Zoom +</button>\n  <button id=\"zoom-out\">Zoom &ndash;</button>\n\n</div>\n";
 
 /***/ })
 /******/ ]);

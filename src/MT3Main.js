@@ -2,6 +2,8 @@ import $ from 'jquery';
 import gConfig from './MT3Config';
 import TTTBoard from './MT3Board';
 import './style.css';
+import boardHtml from './board.html';
+import controlsHtml from './controls.html';
 
 let metaBoard = {};
 
@@ -9,6 +11,9 @@ $(document).ready(init);
 
 function init() {
   var ri, ci, tttBoard, $mbRow;
+
+  $('body').append(controlsHtml);
+  $('body').append(boardHtml);
 
   /* Create an object to hold the meta board,
    *  one for the win state of the mini boards,
