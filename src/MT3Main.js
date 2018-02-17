@@ -1,9 +1,13 @@
 import $ from 'jquery';
+
 import gConfig from './MT3Config';
 import TTTBoard from './MT3Board';
+
 import './style.css';
+
 import boardHtml from './board.html';
 import controlsHtml from './controls.html';
+
 
 let metaBoard = {};
 
@@ -49,6 +53,7 @@ function init() {
   metaBoard.element()
     .hide()
     .fadeIn(gConfig.fadeInTime);
+
   updateControls();
 }
 

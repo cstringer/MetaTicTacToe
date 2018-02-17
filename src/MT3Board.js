@@ -5,12 +5,13 @@ import $ from 'jquery';
  */
 function TTTBoard() {
   var board = [
-    /* 3x3 matrix to hold either
-     *  a meta or mini board */
-    [null,null,null],
-    [null,null,null],
-    [null,null,null]
-  ],
+      /* 3x3 matrix to hold either
+       *  a meta or mini board */
+      [null,null,null],
+      [null,null,null],
+      [null,null,null]
+    ],
+
     // jQuery element for board
     element = null;
 
@@ -56,12 +57,14 @@ TTTBoard.prototype = {
   setWon: setWon               // set the board DOM as won by a player
 };
 
+
 function buildBoard(mbRow, mbCol) {
   var element, ri, $rowDiv, ci;
 
   /* Create a .board div, add unique classes and metaboard data
    *  and store it in the current instance element property */
-  element = $('<div>').addClass('board board-' + mbRow + '-' + mbCol)
+  element = $('<div>')
+    .addClass('board board-' + mbRow + '-' + mbCol)
     .data('mbRow', mbRow)
     .data('mbCol', mbCol);
 
@@ -70,13 +73,17 @@ function buildBoard(mbRow, mbCol) {
    *  then, for each 'cell', append a SPAN and set
    *  data-col property and classes.  */
   for (ri = 0; ri < 3; ri++) {
-    $rowDiv = $('<div>').data('row', ri)
+    $rowDiv = $('<div>')
+      .data('row', ri)
       .addClass('row row-' + ri);
+
     for (ci = 0; ci < 3; ci++) {
-      $('<span>').data('col', ci)
+      $('<span>')
+        .data('col', ci)
         .addClass('col col-' + ci)
         .appendTo($rowDiv);
     }
+
     element.append($rowDiv);
   }
 
@@ -96,7 +103,8 @@ function updateBoard() {
   for (ri = 0; ri < 3; ri++) {
     for (ci = 0; ci < 3; ci++) {
       mark = /(X|O)/.test(this.getCell(ri, ci)) ? this.getCell(ri, ci) : '';
-      $(this.element()).find('.row-' + ri + ' .col-' + ci)
+      $(this.element())
+        .find('.row-' + ri + ' .col-' + ci)
         .removeClass('X O')
         .text(mark)
         .addClass(mark);
@@ -154,8 +162,10 @@ function findWin() {
 }
 
 function setWon(winner) {
-  this.element().addClass('won' + ' ' + winner)
+  this.element()
+    .addClass('won' + ' ' + winner)
     .text(winner);
+
   return this;
 }
 
