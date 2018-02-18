@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/MT3Main.js',
+    entry: './src/index.js',
 
     output: {
         filename: 'metaTicTacToe.js',
