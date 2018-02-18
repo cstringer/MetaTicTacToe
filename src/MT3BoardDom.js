@@ -2,10 +2,10 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 export default {
-    buildBoardDom: buildBoardDom,
-    updateDomForBoard: updateDomForBoard,
-    setWonForElement: setWonForElement,
-    setCatsForElement: setCatsForElement
+    buildBoardDom,
+    updateDomForBoard,
+    setWonForElement,
+    setCatsForElement
 };
 
 function buildBoardDom(mbRow, mbCol) {

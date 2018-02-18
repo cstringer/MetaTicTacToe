@@ -49,8 +49,8 @@ function BoardData() {
 }
 
 BoardData.prototype = {
-    findWin: findWin, // check for 3-in-a-row
-    isCats: isCats    // return true if "cat game": filled board w/ no winner
+    findWin, // check for 3-in-a-row
+    isCats    // return true if "cat game": filled board w/ no winner
 };
 
 export default BoardData;

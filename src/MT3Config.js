@@ -3,7 +3,7 @@
 export default {
 
   // game start fade in time (milliseconds)
-  fadeInTime:     500,
+  fadeInTime:   500,
 
   // CSS selectors
   sels: {
