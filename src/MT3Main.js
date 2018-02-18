@@ -14,75 +14,82 @@ let metaBoard = {};
 $(document).ready(init);
 
 function init() {
-    var ri, ci, miniBoard, $mbRow, mbEl;
+    let $metaEl, ri, ci, miniBoard;
 
-    BoardDom.initDom();
+    // Create DOM elements for meta/mini boards
+    $metaEl = BoardDom.init();
+    BoardDom.buildMetaBoard($metaEl);
 
-    /* Create an object to hold the meta board,
+    /* Create data object to hold the meta board,
      *  one for the win state of the mini boards,
-     *  extend some extra values, and prepare a DOM element
-     */
-    metaBoard = new BoardData();
+     *  and extend with some extra props */
+    metaBoard = BoardData({
+        element: $metaEl
+    });
     _.extend(metaBoard, {
         ended : false,
         lastBoard : null,
         lastColIdx : null,
         lastRowIdx : null,
         turn : 1,
-        wins : new BoardData()
+        wins : BoardData()
     });
-    metaBoard.element($(gConfig.sels.metaBoard)).empty();
 
-    /* Create new DIVs and board objects for each mini board,
-     *  and add them to the meta board element */
+    // create data objects for mini boards
     for (ri = 0; ri < 3; ri++) {
-        $mbRow = $('<div>').addClass('mb-row');
         for (ci = 0; ci < 3; ci++) {
-            miniBoard = new BoardData();
-            mbEl = BoardDom.buildBoardDom(ri, ci);
-            miniBoard.element(mbEl).appendTo($mbRow);
+            miniBoard = BoardData({
+                element: BoardDom.findMiniBoard($metaEl, ri, ci)
+            });
             metaBoard.setCell(ri, ci, miniBoard);
         }
-        metaBoard.element().append($mbRow);
     }
 
     // bind event handlers
-    bindEvents();
+    bindEvents($metaEl);
 
     // enable Zoom module
     Zoom.init();
-    Zoom.setMetaBoardEl(metaBoard.element());
+    Zoom.setMetaBoardEl($metaEl);
+    Zoom.applyZoomToElement();
 
-    /* Show the meta board and get the party started (!) */
-    metaBoard.element()
-             .hide()
-             .fadeIn(gConfig.fadeInTime);
+    // show the meta board and get the party started
+    $metaEl.hide()
+           .fadeIn(gConfig.fadeInTime);
 
     updateControls();
 }
 
-function bindEvents() {
-    metaBoard.element().on('click', '.col', handlePlayerTurn);
+function bindEvents($metaEl) {
+    $metaEl.on('click', '.col', handleBoardClick);
     $(gConfig.sels.startOver).on('click', handleStartOver);
-    $(gConfig.sels.undoMove).on('click', handleUndoMove);
+    //$(gConfig.sels.undoMove).on('click', handleUndoMove);
 
     $(window).on('beforeunload', function() {
         return 'Are you sure you want to leave?';
     });
 }
 
-function handlePlayerTurn() {
-    var colIdx, rowIdx, mbRow, mbCol,
-        miniBoard, miniWinner, mbWon;
+function handleBoardClick(event) {
+    let target = _.result(event, 'target'),
+        colIdx, rowIdx, mbRow, mbCol;
+
+    if (!target) { return; }
 
     // don't handle clicks when the game ends
     if (metaBoard.ended) { return; }
 
     // get row and column indexes
-    colIdx = $(this).data('col');
-    rowIdx = $(this).parent().data('row');
-    mbRow = $(this).closest(gConfig.sels.board).data('mbRow');
-    mbCol = $(this).closest(gConfig.sels.board).data('mbCol');
+    mbRow = $(target).closest(gConfig.sels.board).data('mbRow');
+    mbCol = $(target).closest(gConfig.sels.board).data('mbCol');
+    rowIdx = $(target).data('row');
+    colIdx = $(target).data('col');
+
+    handlePlayerTurn(mbRow, mbCol, rowIdx, colIdx);
+}
+
+function handlePlayerTurn(mbRow, mbCol, rowIdx, colIdx) {
+    let player, miniBoard, miniWinner, metaWinner;
 
     // get the Board object for the mini board,
     // return if there's no board, or it's already set
@@ -91,29 +98,28 @@ function handlePlayerTurn() {
 
     // put an X or O in the mini board cell, depending on whose turn it is
     miniBoard.setCell(rowIdx, colIdx, getPlayerForTurn());
-    BoardDom.updateDomForBoard(miniBoard);
+    BoardDom.updateMiniBoard(miniBoard);
 
     // determine if mini board is won
     miniWinner = miniBoard.findWin();
     if (miniWinner) {
-        BoardDom.setWonForElement(miniBoard.element(), miniWinner);
+        BoardDom.setWonForElement(miniBoard.getElement(), miniWinner);
         metaBoard.wins.setCell(mbRow, mbCol, miniWinner);
     } else if (miniBoard.isCats()) {
         BoardDom.setCatsForElement(miniBoard);
     }
 
     // determine if meta board is won
-    mbWon = metaBoard.wins.findWin();
-    if (mbWon) {
-        return gameOver(mbWon);
-    }            
-
-    // update meta board and controls
-    metaBoard.lastBoard = miniBoard;
-    metaBoard.lastRowIdx = rowIdx;
-    metaBoard.lastColIdx = colIdx;
-    updateMetaBoard();
-    updateControls();
+    metaWinner = metaBoard.wins.findWin();
+    if (!metaWinner) {
+        // update meta board and controls
+        BoardDom.updateMetaBoard(rowIdx, colIdx);
+        metaBoard.turn++;
+        updateControls(metaBoard.turn);
+    } else {
+        // meta board won, game over
+        gameOver(metaWinner);
+    }
 }
 
 function handleStartOver() {
@@ -123,45 +129,26 @@ function handleStartOver() {
 }
 
 function handleUndoMove() {
-    var ri = metaBoard.lastRowIdx,
-        ci = metaBoard.lastColIdx;
-    //TODO: undo last move!?!
-    metaBoard.turn--;
-    metaBoard.lastBoard.setCell(ri, ci, null);
-    BoardDom.updateDomForBoard(metaBoard.lastBoard);
-    updateMetaBoard();
-    //TODO: must reset board to previous state!
-    updateControls();
+    //TODO: undo last move
+    //metaBoard.turn--;
+    //updateMetaBoard();
+    //updateControls();
 }
 
-
-function getPlayerForTurn() {
-    return (metaBoard.turn % 2) ? 'X' : 'O';
+function getPlayerForTurn(turn) {
+    turn = turn || metaBoard.turn;
+    return (turn % 2) ? 'X' : 'O';
 }
 
-function updateControls() {
-    var player = getPlayerForTurn();
-    $(gConfig.sels.turn).removeClass().addClass(player);
+function updateControls(turn) {
+    let player = getPlayerForTurn(turn);
+
+    $(gConfig.sels.turn).removeClass()
+                        .addClass(player);
     $(gConfig.sels.turnPlayer).text(player);
-    $(gConfig.sels.undoMove).attr('disabled', (metaBoard.turn === 1));
-    $(gConfig.sels.startOver).attr('disabled', (metaBoard.turn === 1));
-}
 
-function updateMetaBoard() {
-    var nextBoard = metaBoard.lastRowIdx + '-' + metaBoard.lastColIdx,
-        $nextBoard = $('.board-' + nextBoard);
-    if (!$nextBoard.hasClass('won') &&
-        !$nextBoard.hasClass('cats')) {
-        // only enable the next clickable mini board
-        $(gConfig.sels.metaBoard)
-            .find(gConfig.sels.board).removeClass('inactive')
-            .not($nextBoard).addClass('inactive');
-    } else {
-        // next clickable board is won, enable all
-        $(gConfig.sels.metaBoard)
-            .find(gConfig.sels.board).removeClass('inactive');
-    }
-    metaBoard.turn++;
+    $(gConfig.sels.undoMove).attr('disabled', (turn === 1));
+    $(gConfig.sels.startOver).attr('disabled', (turn === 1));
 }
 
 function gameOver(winner) {
@@ -169,13 +156,11 @@ function gameOver(winner) {
     metaBoard.ended = true;
 
     // set classes on won boards
-    $(metaBoard.element()).find(gConfig.sels.board).removeClass('inactive')
-        .not('.won.' + winner).addClass('inactive');
+    BoardDom.setGameOver(metaBoard.getElement(), winner);
 
     // show a win message
-    alert('And the winner is... ' + winner + '!!!');
+    alert(_.template(gConfig.winMsg)({ winner }));
 
     // disable undo button
-    $(gConfig.sels.undoMove).prop('disabled', true);
+    //$(gConfig.sels.undoMove).prop('disabled', true);
 }
-

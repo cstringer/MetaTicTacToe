@@ -8,10 +8,14 @@ let metaBoardEl = null;
 export default {
     init,
     setZoomLevel,
-    setMetaBoardEl
+    setMetaBoardEl,
+    applyZoomToElement
 };
 
 function init() {
+    if (localStorage) {
+        zoomLevel = localStorage.getItem('zoomLevel');
+    }
     bindEvents();
 }
 
@@ -42,6 +46,9 @@ function setZoomLevel(mode) {
     zIdx = Math.min(zIdx, gConfig.zoom.length - 1);
 
     zoomLevel = zIdx;
+    if (localStorage) {
+        localStorage.setItem('zoomLevel', zoomLevel);
+    }
 }
 
 function setMetaBoardEl(el) {
