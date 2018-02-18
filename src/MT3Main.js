@@ -4,6 +4,7 @@ import _ from 'underscore';
 import gConfig from './MT3Config';
 import BoardData from './MT3BoardData';
 import BoardDom from './MT3BoardDom';
+import Zoom from './MT3Zoom';
 
 import './style.css';
 
@@ -33,8 +34,7 @@ function init() {
         lastColIdx : null,
         lastRowIdx : null,
         turn : 1,
-        wins : new BoardData(),
-        zoom : gConfig.zoomDef
+        wins : new BoardData()
     });
     metaBoard.element($(gConfig.sels.metaBoard)).empty();
 
@@ -54,6 +54,10 @@ function init() {
     // bind event handlers
     bindEvents();
 
+    // enable Zoom module
+    Zoom.init();
+    Zoom.setMetaBoardEl(metaBoard.element());
+
     /* Show the meta board and get the party started (!) */
     metaBoard.element()
              .hide()
@@ -66,8 +70,6 @@ function bindEvents() {
     metaBoard.element().on('click', '.col', handlePlayerTurn);
     $(gConfig.sels.startOver).on('click', handleStartOver);
     $(gConfig.sels.undoMove).on('click', handleUndoMove);
-    $(gConfig.sels.zoomIn).on('click', handleZoom);
-    $(gConfig.sels.zoomOut).on('click', handleZoom);
 
     $(window).on('beforeunload', function() {
         return 'Are you sure you want to leave?';
@@ -135,27 +137,6 @@ function handleUndoMove() {
     updateMetaBoard();
     //TODO: must reset board to previous state!
     updateControls();
-}
-
-function handleZoom() {
-    var mode, removeMode, zIdx, scale;
-
-    zIdx = metaBoard.zoom;
-    mode = $(this).attr('id');
-    if (mode === 'zoom-in') {
-        zIdx--;
-    } else if (mode === 'zoom-out') {
-        zIdx++;
-    }
-    zIdx = Math.max(zIdx, 0);
-    zIdx = Math.min(zIdx, gConfig.zoom.length - 1);
-    metaBoard.zoom = zIdx;
-
-    scale = gConfig.zoom[zIdx].scale;
-    metaBoard.element().css({
-        transform: 'scale(' + scale + ') ' +
-        'translate(0px, ' + gConfig.zoom[zIdx].offset + ')'
-    });
 }
 
 
