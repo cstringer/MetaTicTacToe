@@ -5,6 +5,9 @@ body {
   background-color: #f3f3f3;
   font-family: Verdana, Helvetica, Arial, sans-serif;
   user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 /*=== Controls ===*/
 #controls {
