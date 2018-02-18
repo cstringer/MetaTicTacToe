@@ -2,6 +2,7 @@ const path = require('path');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
 
 module.exports = {
+    //devtool: 'inline-source-map',
 
     entry: './src/MT3Main.js',
 
@@ -23,6 +24,7 @@ module.exports = {
                     'css-loader'
                 ]
             },
+
             {
                 test: /\.html$/,
                 use: [
