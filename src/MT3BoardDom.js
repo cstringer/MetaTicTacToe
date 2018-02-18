@@ -1,12 +1,22 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
+import boardHtml from './board.html';
+import controlsHtml from './controls.html';
+
 export default {
+    initDom,
     buildBoardDom,
     updateDomForBoard,
     setWonForElement,
     setCatsForElement
 };
+
+function initDom() {
+    $('body').empty();
+    $('body').append(controlsHtml);
+    $('body').append(boardHtml);
+}
 
 function buildBoardDom(mbRow, mbCol) {
     let element, ri, $rowDiv, ci;

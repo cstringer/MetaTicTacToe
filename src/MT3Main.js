@@ -8,9 +8,6 @@ import Zoom from './MT3Zoom';
 
 import './style.css';
 
-import boardHtml from './board.html';
-import controlsHtml from './controls.html';
-
 
 let metaBoard = {};
 
@@ -19,9 +16,7 @@ $(document).ready(init);
 function init() {
     var ri, ci, miniBoard, $mbRow, mbEl;
 
-    $('body').empty();
-    $('body').append(controlsHtml);
-    $('body').append(boardHtml);
+    BoardDom.initDom();
 
     /* Create an object to hold the meta board,
      *  one for the win state of the mini boards,
