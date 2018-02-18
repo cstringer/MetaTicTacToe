@@ -1,7 +1,7 @@
 import assert from 'assert';
-import Board from '../src/MT3Board';
+import Board from '../src/MT3BoardData';
 
-describe('MT3Board Test', function() {
+describe('MT3BoardData Test', function() {
 
     describe('Instance defaults', function() {
         const board = new Board();

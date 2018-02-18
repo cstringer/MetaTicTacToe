@@ -2,7 +2,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import gConfig from './MT3Config';
-import Board from './MT3Board';
+import BoardData from './MT3BoardData';
+import BoardDom from './MT3BoardDom';
 
 import './style.css';
 
@@ -15,7 +16,7 @@ let metaBoard = {};
 $(document).ready(init);
 
 function init() {
-    var ri, ci, miniBoard, $mbRow;
+    var ri, ci, miniBoard, $mbRow, mbEl;
 
     $('body').empty();
     $('body').append(controlsHtml);
@@ -25,14 +26,14 @@ function init() {
      *  one for the win state of the mini boards,
      *  extend some extra values, and prepare a DOM element
      */
-    metaBoard = new Board();
+    metaBoard = new BoardData();
     _.extend(metaBoard, {
         ended : false,
         lastBoard : null,
         lastColIdx : null,
         lastRowIdx : null,
         turn : 1,
-        wins : new Board(),
+        wins : new BoardData(),
         zoom : gConfig.zoomDef
     });
     metaBoard.element($(gConfig.sels.metaBoard)).empty();
@@ -42,10 +43,9 @@ function init() {
     for (ri = 0; ri < 3; ri++) {
         $mbRow = $('<div>').addClass('mb-row');
         for (ci = 0; ci < 3; ci++) {
-            miniBoard = new Board();
-            miniBoard.buildBoard(ri, ci)
-                .element()
-                .appendTo($mbRow);
+            miniBoard = new BoardData();
+            mbEl = BoardDom.buildBoardDom(ri, ci);
+            miniBoard.element(mbEl).appendTo($mbRow);
             metaBoard.setCell(ri, ci, miniBoard);
         }
         metaBoard.element().append($mbRow);
@@ -56,8 +56,8 @@ function init() {
 
     /* Show the meta board and get the party started (!) */
     metaBoard.element()
-        .hide()
-        .fadeIn(gConfig.fadeInTime);
+             .hide()
+             .fadeIn(gConfig.fadeInTime);
 
     updateControls();
 }
@@ -93,16 +93,16 @@ function handlePlayerTurn() {
     if (!miniBoard || miniBoard.getCell(rowIdx, colIdx) !== null) { return; }
 
     // put an X or O in the mini board cell, depending on whose turn it is
-    miniBoard.setCell(rowIdx, colIdx, getPlayerForTurn())
-        .updateBoard();
+    miniBoard.setCell(rowIdx, colIdx, getPlayerForTurn());
+    BoardDom.updateDomForBoard(miniBoard);
 
     // determine if mini board is won
     miniWinner = miniBoard.findWin();
     if (miniWinner) {
-        miniBoard.setWon(miniWinner);
+        BoardDom.setWonForElement(miniBoard.element(), miniWinner);
         metaBoard.wins.setCell(mbRow, mbCol, miniWinner);
     } else if (miniBoard.isCats()) {
-        miniBoard.setCats();
+        BoardDom.setCatsForElement(miniBoard);
     }
 
     // determine if meta board is won
@@ -131,7 +131,7 @@ function handleUndoMove() {
     //TODO: undo last move!?!
     metaBoard.turn--;
     metaBoard.lastBoard.setCell(ri, ci, null);
-    metaBoard.lastBoard.updateBoard();
+    BoardDom.updateDomForBoard(metaBoard.lastBoard);
     updateMetaBoard();
     //TODO: must reset board to previous state!
     updateControls();
