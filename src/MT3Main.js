@@ -30,9 +30,6 @@ function init() {
     });
     _.extend(metaBoard, {
         ended : false,
-        lastBoard : null,
-        lastColIdx : null,
-        lastRowIdx : null,
         turn : 1
     });
 
