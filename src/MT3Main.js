@@ -17,6 +17,7 @@ $(document).ready(init);
 function init() {
     var ri, ci, miniBoard, $mbRow;
 
+    $('body').empty();
     $('body').append(controlsHtml);
     $('body').append(boardHtml);
 
