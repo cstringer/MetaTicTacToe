@@ -4,6 +4,8 @@ import _ from 'underscore';
  * Factory for board data objects
  */
 function BoardData(options) {
+    'use strict';
+
     let board = [
             /* 3x3 matrix to hold either
              *  a meta or mini board */
@@ -89,9 +91,7 @@ function BoardData(options) {
      * @return {string|boolean}
      */
     function findWin() {
-        let winFound, testVal,
-            rowIdx, row,
-            colIdx, col;
+        let winFound, testVal, rowIdx, row, colIdx;
 
         winFound = false;
 

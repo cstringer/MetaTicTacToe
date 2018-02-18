@@ -13,6 +13,7 @@ export default {
     buildMiniBoard,
     findMiniBoard,
     updateMiniBoard,
+    getDataForMiniBoardCell,
     setWonForElement,
     setCatsForElement,
     setGameOver
@@ -43,7 +44,7 @@ function buildMetaBoard($metaEl) {
 
     // Create DIVs for each row of the meta board
     for (ri = 0; ri < 3; ri++) {
-        $mbRow = $('<div>').addClass('mb-row');
+        $mbRow = $('<div>').addClass(gConfig.cls.metaRow);
         $metaEl.append($mbRow);
 
         for (ci = 0; ci < 3; ci++) {
@@ -65,8 +66,8 @@ function updateMetaBoard(rowIdx, colIdx) {
     $allBoards.removeClass(gConfig.cls.inactive);
 
     // only enable the next clickable mini board
-    if (!$nextBoard.hasClass('won') &&
-        !$nextBoard.hasClass('cats')) {
+    if (!$nextBoard.hasClass(gConfig.cls.won) &&
+        !$nextBoard.hasClass(gConfig.cls.cats)) {
         $allBoards.not($nextBoard)
                   .addClass(gConfig.cls.inactive);
     }
@@ -134,6 +135,21 @@ function updateMiniBoard(board) {
                 .addClass(mark);
         }
     }
+}
+
+/**
+ * Return row and column indexes for meta and mini positions
+ * @param {object} cellEl - board cell DOM element
+ * @return {object}       - row, column positions for mini and meta boards
+ */
+function getDataForMiniBoardCell(cellEl) {
+    const $cell = $(cellEl);
+    return {
+        metaRow: $cell.closest(gConfig.sels.board).data('mbRow'),
+        metaCol: $cell.closest(gConfig.sels.board).data('mbCol'),
+        miniRow: $cell.data('row'),
+        miniCol: $cell.data('col')
+    };
 }
 
 /**

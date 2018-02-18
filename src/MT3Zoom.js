@@ -1,9 +1,6 @@
 import $ from 'jquery';
-
+import _ from 'underscore';
 import gConfig from './MT3Config';
-
-let zoomLevel = gConfig.zoomDef;
-let metaBoardEl = null;
 
 export default {
     init,
@@ -12,33 +9,51 @@ export default {
     applyZoomToElement
 };
 
-function init() {
+
+const zoomBtnSel = [
+    gConfig.sels.zoomIn,
+    gConfig.sels.zoomOut
+].join(',');
+
+const regex = {
+    in: /in/,
+    out: /out/
+};
+
+const storageKey = 'zoomLevel';
+
+
+let zoomLevel = gConfig.zoomDef;
+let metaBoardEl = {};
+
+
+function init(metaEl) {
     if (localStorage) {
-        zoomLevel = localStorage.getItem('zoomLevel');
+        zoomLevel = localStorage.getItem(storageKey);
+    }
+    if (metaEl) {
+        setMetaBoardEl(metaEl);
+        applyZoomToElement();
     }
     bindEvents();
 }
 
 function bindEvents() {
-    $(gConfig.sels.zoomIn).on('click', handleZoom);
-    $(gConfig.sels.zoomOut).on('click', handleZoom);
+    $(zoomBtnSel).on('click', handleZoom);
 }
 
 function handleZoom(event) {
-    let mode;
-
-    mode = $(event.target).attr('id');
+    const mode = _.result(event.target, 'id', '');
     setZoomLevel(mode);
-
     applyZoomToElement();
 }
 
 function setZoomLevel(mode) {
     let zIdx = zoomLevel;
 
-    if (mode === 'zoom-in') {
+    if (regex.in.test(mode)) {
         zIdx--;
-    } else if (mode === 'zoom-out') {
+    } else if (regex.out.test(mode)) {
         zIdx++;
     }
 
@@ -47,7 +62,7 @@ function setZoomLevel(mode) {
 
     zoomLevel = zIdx;
     if (localStorage) {
-        localStorage.setItem('zoomLevel', zoomLevel);
+        localStorage.setItem(storageKey, zoomLevel);
     }
 }
 
@@ -57,8 +72,11 @@ function setMetaBoardEl(el) {
 
 function applyZoomToElement() {
     const scale = gConfig.zoom[zoomLevel].scale;
-    metaBoardEl.css({
-        transform: 'scale(' + scale + ') ' +
+    const xformStr = [
+        'scale(' + scale + ')',
         'translate(0px, ' + gConfig.zoom[zoomLevel].offset + ')'
-    });
+    ].join(' ');
+    if (_.isFunction(metaBoardEl.css)) {
+        metaBoardEl.css('transform', xformStr);
+    }
 }

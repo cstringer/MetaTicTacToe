@@ -4,15 +4,23 @@ export default {
         board:      'board',
         cats:       'cats',
         inactive:   'inactive',
+        metaRow:    'mb-row',
         won:        'won'
     },
 
     // game start fade in time (milliseconds)
     fadeInTime:     500,
 
+    msg: {
+        newGame: 'Start new game?',
+        unload: 'Are you sure you want to leave?',
+        win: 'And the winner is... <%= winner %>!!!'
+    },
+
     // CSS selectors
     sels: {
         board:      '.board',
+        cell:       '.col',
         domRoot:    'body',
         metaBoard:  '#meta-board',
         startOver:  '#start-over',
@@ -22,8 +30,6 @@ export default {
         zoomIn:     '#zoom-in',
         zoomOut:    '#zoom-out'
     },
-
-    winMsg: 'And the winner is... <%= winner %>!!!',
 
     // zoom factors and translate offsets
     zoom: [
