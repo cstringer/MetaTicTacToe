@@ -17,11 +17,13 @@
 		"jsdom": "^11.6.2",
 		"mocha": "^5.0.1",
 		"style-loader": "^0.20.2",
-		"webpack": "^3.11.0"
+		"webpack": "^3.11.0",
+		"webpack-merge": "^4.1.1"
 	},
 	"scripts": {
-		"build": "webpack",
-		"test": "mocha --compilers js:babel-register"
+		"build": "webpack --config webpack.prod.js",
+		"build-dev": "webpack --config webpack.dev.js",
+		"test": "mocha --require babel-core/register"
 	},
 	"repository": {
 		"type": "git",
