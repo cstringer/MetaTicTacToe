@@ -17,13 +17,24 @@ describe('MT3BoardData Test', function() {
         });
     });
 
-    describe('get/setCell() value', function() {
+    describe('get/setCell() string', function() {
         const board = Board();
 
         board.setCell(0,0,'X');
 
         it('should set/get same value', function() {
             assert.equal(board.getCell(0,0), 'X');
+        });
+    });
+
+    describe('get/setCell() object', function() {
+        const board = Board();
+        const obj = {};
+
+        board.setCell(0,0,obj);
+
+        it('should set/get same object', function() {
+            assert.deepEqual(board.getCell(0,0), obj);
         });
     });
 
@@ -85,16 +96,30 @@ describe('MT3BoardData Test', function() {
 
     });
 
+    describe('findWin() calls itself on cells containing objects', function() {
+        const board = Board();
+        const cell = { findWin: () => 'X' };
+        board.setCell(0,0,cell);
+        board.setCell(0,1,cell);
+        board.setCell(0,2,cell);
+        const win = board.findWin();
+
+        it('should find a win by calling findWin() on cell objects', function() {
+            assert.equal(win, 'X');
+        });
+    });
+
     describe('isCats() when board is not full', function() {
-        const board = new Board();
+        const board = Board();
         const isCats = board.isCats();
+
         it('should return false when board is not full', function() {
             assert.equal(isCats, false);
         });
     });
 
     describe('isCats() when board is full and won', function() {
-        const board = new Board();
+        const board = Board();
         board.setCell(0,0,'X'); // X X X
         board.setCell(0,1,'X');
         board.setCell(0,2,'X');
@@ -105,13 +130,14 @@ describe('MT3BoardData Test', function() {
         board.setCell(2,1,'O');
         board.setCell(2,2,'O');
         const isCats = board.isCats();
+
         it('should return false when board is won', function() {
             assert.equal(isCats, false);
         });
     });
 
     describe('isCats() when board is full but not won', function() {
-        const board = new Board();
+        const board = Board();
         board.setCell(0,0,'O'); // O X O
         board.setCell(0,1,'X');
         board.setCell(0,2,'O');

@@ -95,13 +95,18 @@ function BoardData(options) {
 
         winFound = false;
 
+        function getVal(v) {
+            return _.isObject(v) ? _.result(v, 'findWin', null) : v;
+        }
+
         // if all items in a row have equal nonnull values, it's a win
         for (rowIdx = 0; rowIdx < 3; rowIdx++) {
             row = getRow(rowIdx);
-            testVal = row[0];
+
+            testVal = getVal(row[0]);
             winFound = (testVal !== null) &&
-                (testVal === row[1]) &&
-                (testVal === row[2]);
+                (testVal === getVal(row[1])) &&
+                (testVal === getVal(row[2]));
             if (winFound) {
                 return testVal;
             }
@@ -109,28 +114,28 @@ function BoardData(options) {
 
         // if all items in a column have equal nonnull values, it's a win
         for (colIdx = 0; colIdx < 3; colIdx++) {
-            testVal = getCell(0, colIdx);
+            testVal = getVal(getCell(0, colIdx));
             winFound = (testVal !== null) &&
-                (testVal === getCell(1, colIdx)) &&
-                (testVal === getCell(2, colIdx));
+                (testVal === getVal(getCell(1, colIdx))) &&
+                (testVal === getVal(getCell(2, colIdx)));
             if (winFound) {
                 return testVal;
             }
         }
 
         // if either diagonal has equal nonnull values, it's a win
-        testVal = getCell(0, 0);
+        testVal = getVal(getCell(0, 0));
         winFound = (testVal !== null) &&
-            (testVal === getCell(1, 1)) &&
-            (testVal === getCell(2, 2));
+            (testVal === getVal(getCell(1, 1))) &&
+            (testVal === getVal(getCell(2, 2)));
         if (winFound) {
             return testVal;
         }
 
-        testVal = getCell(0, 2);
+        testVal = getVal(getCell(0, 2));
         winFound = (testVal !== null)  &&
-            (testVal === getCell(1, 1)) &&
-            (testVal === getCell(2, 0));             
+            (testVal === getVal(getCell(1, 1))) &&
+            (testVal === getVal(getCell(2, 0)));             
 
         return winFound ? testVal : false;
     }

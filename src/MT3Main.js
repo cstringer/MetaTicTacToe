@@ -20,8 +20,7 @@ function init() {
     $metaEl = BoardDom.init();
     BoardDom.buildMetaBoard($metaEl);
 
-    /* Create data object to hold the meta board,
-     *  one for the win state of the mini boards,
+    /* Create data object to hold the meta board
      *  and extend with some extra props */
     metaBoard = BoardData({
         element: $metaEl
@@ -31,8 +30,7 @@ function init() {
         lastBoard : null,
         lastColIdx : null,
         lastRowIdx : null,
-        turn : 1,
-        wins : BoardData()
+        turn : 1
     });
 
     // create data objects for mini boards
@@ -104,13 +102,12 @@ function handlePlayerTurn(mbRow, mbCol, rowIdx, colIdx) {
     miniWinner = miniBoard.findWin();
     if (miniWinner) {
         BoardDom.setWonForElement(miniBoard.getElement(), miniWinner);
-        metaBoard.wins.setCell(mbRow, mbCol, miniWinner);
     } else if (miniBoard.isCats()) {
         BoardDom.setCatsForElement(miniBoard);
     }
 
     // determine if meta board is won
-    metaWinner = metaBoard.wins.findWin();
+    metaWinner = metaBoard.findWin();
     if (!metaWinner) {
         // update meta board and controls
         BoardDom.updateMetaBoard(rowIdx, colIdx);
