@@ -23,7 +23,8 @@ function init() {
 
     /* Create an object to hold the meta board,
      *  one for the win state of the mini boards,
-     *  set initial values, and prepare its DOM element */
+     *  extend some extra values, and prepare a DOM element
+     */
     metaBoard = new Board();
     _.extend(metaBoard, {
         ended : false,
@@ -100,6 +101,8 @@ function handlePlayerTurn() {
     if (miniWinner) {
         miniBoard.setWon(miniWinner);
         metaBoard.wins.setCell(mbRow, mbCol, miniWinner);
+    } else if (miniBoard.isCats()) {
+        miniBoard.setCats();
     }
 
     // determine if meta board is won
@@ -169,14 +172,18 @@ function updateControls() {
 }
 
 function updateMetaBoard() {
-    var nextBoard = metaBoard.lastRowIdx + '-' + metaBoard.lastColIdx;
-    if (!$('.board-' + nextBoard).hasClass('won')) {
+    var nextBoard = metaBoard.lastRowIdx + '-' + metaBoard.lastColIdx,
+        $nextBoard = $('.board-' + nextBoard);
+    if (!$nextBoard.hasClass('won') &&
+        !$nextBoard.hasClass('cats')) {
         // only enable the next clickable mini board
-        $(gConfig.sels.metaBoard).find(gConfig.sels.board).removeClass('inactive')
-            .not('.board-'  + nextBoard).addClass('inactive');
+        $(gConfig.sels.metaBoard)
+            .find(gConfig.sels.board).removeClass('inactive')
+            .not($nextBoard).addClass('inactive');
     } else {
         // next clickable board is won, enable all
-        $(gConfig.sels.metaBoard).find(gConfig.sels.board).removeClass('inactive');
+        $(gConfig.sels.metaBoard)
+            .find(gConfig.sels.board).removeClass('inactive');
     }
     metaBoard.turn++;
 }

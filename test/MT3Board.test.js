@@ -82,6 +82,26 @@ describe('MT3Board Test', function() {
         it('should not find a win by default', function() {
             assert.equal(win, false);
         });
+
+    });
+
+    describe('isCats() detects a "cats game"', function() {
+        const board = new Board();
+        board.setCell(0,0,'O'); // O X O
+        board.setCell(0,1,'X');
+        board.setCell(0,2,'O');
+        board.setCell(1,0,'O'); // O X X
+        board.setCell(1,1,'X');
+        board.setCell(1,2,'X');
+        board.setCell(2,0,'X'); // X O X
+        board.setCell(2,1,'O');
+        board.setCell(2,2,'X');
+        const isCats = board.isCats();
+
+        it('should return true when board is full with no winner', function() {
+            assert.equal(isCats, true);
+        });
+
     });
 
 });
