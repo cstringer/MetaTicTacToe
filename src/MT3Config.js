@@ -12,9 +12,9 @@ export default {
     fadeInTime:     500,
 
     msg: {
-        newGame: 'Start new game?',
-        unload: 'Are you sure you want to leave?',
-        win: 'And the winner is... <%= winner %>!!!'
+        newGame:    'Start new game?',
+        unload:     'Are you sure you want to leave?',
+        win:        'And the winner is... <%= winner %>!!!'
     },
 
     // CSS selectors

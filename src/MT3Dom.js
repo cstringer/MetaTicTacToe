@@ -173,8 +173,8 @@ function findMiniBoard(options) {
  * @param {object} data
  * @param {number} data.metaRow
  * @param {number} data.metaCol
- * @param {number} data.metaRow
- * @param {number} data.metaCol
+ * @param {number} data.miniRow
+ * @param {number} data.miniCol
  * @param {string} player
  */
 function markMiniBoard(data, player) {

@@ -88,8 +88,8 @@ function handleUndoMove() {
  * @param {object} data
  * @param {number} data.metaRow
  * @param {number} data.metaCol
- * @param {number} data.metaRow
- * @param {number} data.metaCol
+ * @param {number} data.miniRow
+ * @param {number} data.miniCol
  */
 function doPlayerTurn(data) {
     const player = getPlayerForTurn();
