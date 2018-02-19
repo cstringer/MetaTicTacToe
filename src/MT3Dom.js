@@ -4,15 +4,16 @@ import _ from 'underscore';
 
 import gConfig from './MT3Config';
 import Main from './MT3Main';
+import Zoom from './MT3Zoom';
 
 import boardHtml from './board.html';
 import controlsHtml from './controls.html';
 
-import './style.css';
 
 
 export default {
     init,
+    bindEvents,
 
     // meta boards
     findMetaEl,
@@ -33,6 +34,7 @@ export default {
     setGameOver,
     updateControls,
     showWinMessage,
+    handleStartOver,
     showNewGameConfirm
 };
 
@@ -45,6 +47,25 @@ function init() {
 
     buildMetaBoard();
     bindEvents();
+
+    Zoom.init();
+
+    hideMetaBoard();
+    updateControls();
+    fadeInMetaBoard();
+}
+
+/** Bind event listeners to DOM elements */
+function bindEvents() {
+    const $metaEl = findMetaEl();
+
+    $metaEl.on('click', gConfig.sels.cell, handleBoardClick);
+
+    $(gConfig.sels.startOver).on('click', handleStartOver);
+
+    $(window).on('beforeunload', function() {
+        return gConfig.msg.unload;
+    });
 }
 
 /**
@@ -70,21 +91,6 @@ function buildMetaBoard() {
             $mbRow.append(buildMiniBoard(ri, ci));
         }
     }
-}
-
-/** Bind event listeners to DOM elements */
-function bindEvents() {
-    const $metaEl = findMetaEl();
-
-    $metaEl.on('click', gConfig.sels.cell, Main.handleBoardClick);
-
-    $(gConfig.sels.startOver).on('click', Main.handleStartOver);
-
-    //$(gConfig.sels.undoMove).on('click', Main.handleUndoMove);
-    //
-    $(window).on('beforeunload', function() {
-        return gConfig.msg.unload;
-    });
 }
 
 /**
@@ -190,6 +196,18 @@ function markMiniBoard(data, player) {
 }
 
 /**
+ * Event handler for clicks on mini board cells
+ * @param {object} event        - DOM click event
+ * @param {object} event.target - DOM element for mini board cell
+ */
+function handleBoardClick(event) {
+    const target = _.result(event, 'target');
+    if (_.isObject(target)) {
+        Main.doPlayerTurn(getDataForMiniBoardCell(target));
+    }
+}
+
+/**
  * Return row and column indexes for meta and mini positions
  * @param {object} cellEl - board cell DOM element
  * @return {object}       - row, column positions for mini and meta boards
@@ -238,9 +256,6 @@ function setGameOver(winner) {
            .removeClass(gConfig.cls.inactive)
            .not('.won.' + winner)
                .addClass(gConfig.cls.inactive);
-
-    // disable undo button
-    //$(gConfig.sels.undoMove).prop('disabled', true);
 }
 
 /**
@@ -251,7 +266,6 @@ function updateControls(turn) {
     const player = Main.getPlayerForTurn(turn);
     $(gConfig.sels.turn).removeClass().addClass(player);
     $(gConfig.sels.turnPlayer).text(player);
-    $(gConfig.sels.undoMove).attr('disabled', (turn === 1));
     $(gConfig.sels.startOver).attr('disabled', (turn === 1));
 }
 
@@ -261,6 +275,13 @@ function updateControls(turn) {
  */
 function showWinMessage(winner) {
     window.alert(_.template(gConfig.msg.win)({ winner }));
+}
+
+/** Handle clicks on new game button */
+function handleStartOver() {
+    if (showNewGameConfirm()) {
+        Main.init();
+    }
 }
 
 /**

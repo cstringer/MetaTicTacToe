@@ -33,6 +33,9 @@ let zoomLevel = gConfig.zoomDef;
 function init() {
     if (localStorage) {
         zoomLevel = localStorage.getItem(storageKey);
+        if (!_.isNumber(zoomLevel)) {
+            zoomLevel = gConfig.zoomDef;
+        }
     }
     bindEvents();
     applyZoomToElement();
@@ -76,10 +79,15 @@ function setZoomLevel(mode) {
  * Apply a CSS transform to the meta board element
  */
 function applyZoomToElement() {
-    const scale = gConfig.zoom[zoomLevel].scale;
+    const scale = _.chain(gConfig.zoom)
+                   .result(zoomLevel, gConfig.zoomDef)
+                   .result('scale')
+                   .value();
+
     const xformStr = [
         'scale(' + scale + ')',
         'translate(0px, ' + gConfig.zoom[zoomLevel].offset + ')'
     ].join(' ');
+
     Dom.findMetaEl().css('transform', xformStr);
 }

@@ -1,17 +1,21 @@
 import _ from 'underscore';
-
 import Board from './MT3Board';
-import Dom from './MT3Dom';
-import Zoom from './MT3Zoom';
 
 export default {
     init,
-    handleBoardClick,
-    handleStartOver,
+    getMetaBoard,
+    setMetaBoard,
+    getDom,
+    setDom,
+    createBoardData,
     doPlayerTurn,
     getPlayerForTurn,
     gameOver
 };
+
+
+// Dom interface
+let Dom = null;
 
 // storage for meta board data
 let metaBoard = null;
@@ -20,17 +24,46 @@ const metaProps = {
     turn:  1
 };
 
+
 /** Game entry point */
 function init() {
     metaBoard = createBoardData();
 
-    Dom.init();
-    Dom.hideMetaBoard();
+    if (_.isObject(Dom) && _.isFunction(Dom.init)) {
+        Dom.init();
+    }
+}
 
-    Zoom.init();
+/**
+ * Return the meta Board data object
+ * @return {object}
+ */
+function getMetaBoard() {
+    return metaBoard;
+}
 
-    Dom.updateControls();
-    Dom.fadeInMetaBoard();
+/**
+ * Set the meta Board data object
+ * @param {object} meta
+ */
+function setMetaBoard(meta) {
+    metaBoard = meta;
+}
+
+/**
+ * Get the Dom interface
+ * @param {object} dom  - reference to Dom module
+ */
+function getDom() {
+    return Dom;
+}
+
+/**
+ * Set the Dom interface
+ * @param {object} dom  - reference to Dom module
+ */
+function setDom(dom) {
+    Dom = dom;
 }
 
 /**
@@ -54,34 +87,6 @@ function createBoardData() {
 
     return meta;
 }
-
-/**
- * Event handler for clicks on mini board cells
- * @param {object} event        - DOM click event
- * @param {object} event.target - DOM element for mini board cell
- */
-function handleBoardClick(event) {
-    const target = _.result(event, 'target');
-    if (_.isObject(target) && !metaBoard.ended) {
-        doPlayerTurn(Dom.getDataForMiniBoardCell(target));
-    }
-}
-
-/** Handle clicks on new game button */
-function handleStartOver() {
-    if (Dom.showNewGameConfirm()) {
-        init();
-    }
-}
-
-/*
-function handleUndoMove() {
-    //TODO: undo last move
-    //metaBoard.turn--;
-    //updateMetaBoard();
-    //updateControls();
-}
-*/
 
 /**
  * Perform player turn actions
