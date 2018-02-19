@@ -2,8 +2,9 @@ import _ from 'underscore';
 
 /**
  * Factory for board data objects
+ * @return {object}
  */
-function BoardData(options) {
+function Board() {
     'use strict';
 
     let board = [
@@ -12,18 +13,13 @@ function BoardData(options) {
             [null,null,null],
             [null,null,null],
             [null,null,null]
-        ],
-
-        // jQuery element for board
-        element = _.result(options, 'element', null);
+        ];
 
     return {
         // prop access
         getRow,
         getCell,
         setCell,
-        getElement,
-        setElement,
 
         // methods
         findWin,
@@ -68,22 +64,6 @@ function BoardData(options) {
             (ci >= 0 && ci < board[ri].length)) {
             board[ri][ci] = val;
         }
-    }
-
-    /**
-     * Get the jQuery element
-     * @return {object}
-     */
-    function getElement() {
-        return element;
-    }
-
-    /**
-     * Set the jQuery element
-     * @param {object}
-     */
-    function setElement(el) {
-        element = el;
     }
 
     /**
@@ -166,4 +146,4 @@ function BoardData(options) {
 
 }
 
-export default BoardData;
+export default Board;

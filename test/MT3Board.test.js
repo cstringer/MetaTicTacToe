@@ -1,8 +1,8 @@
 /*global describe, it*/
 import assert from 'assert';
-import Board from '../src/MT3BoardData';
+import Board from '../src/MT3Board';
 
-describe('MT3BoardData Test', function() {
+describe('MT3Board Test', function() {
 
     describe('Instance defaults', function() {
         const board = Board();
@@ -11,10 +11,6 @@ describe('MT3BoardData Test', function() {
             assert.deepEqual(board.getRow(0), [null,null,null]);
             assert.deepEqual(board.getRow(1), [null,null,null]);
             assert.deepEqual(board.getRow(2), [null,null,null]);
-        });
-
-        it('should have null element', function() {
-            assert.equal(board.getElement(), null);
         });
     });
 
@@ -36,16 +32,6 @@ describe('MT3BoardData Test', function() {
 
         it('should set/get same object', function() {
             assert.deepEqual(board.getCell(0,0), obj);
-        });
-    });
-
-    describe('get/setElement() value', function() {
-        const board = Board();
-        const el = {};
-        board.setElement(el);
-
-        it('should set/get same object', function() {
-            assert.equal(board.getElement(), el);
         });
     });
 
