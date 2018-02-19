@@ -1,15 +1,17 @@
 import $ from 'jquery';
 import _ from 'underscore';
+
 import gConfig from './MT3Config';
+import Dom from './MT3Dom';
 
 export default {
     init,
     setZoomLevel,
-    setMetaBoardEl,
     applyZoomToElement
 };
 
 
+// selector for Zoom buttons
 const zoomBtnSel = [
     gConfig.sels.zoomIn,
     gConfig.sels.zoomOut
@@ -20,34 +22,38 @@ const regex = {
     out: /out/
 };
 
+// localStorage item key
 const storageKey = 'zoomLevel';
 
-
+// current zoom level index
 let zoomLevel = gConfig.zoomDef;
-let metaBoardEl = {};
 
 
-function init(metaEl) {
+/** Bind event listeners and apply any previous setting */
+function init() {
     if (localStorage) {
         zoomLevel = localStorage.getItem(storageKey);
     }
-    if (metaEl) {
-        setMetaBoardEl(metaEl);
-        applyZoomToElement();
-    }
     bindEvents();
+    applyZoomToElement();
 }
 
+/** Bind zoom button event listener */
 function bindEvents() {
     $(zoomBtnSel).on('click', handleZoom);
 }
 
+/** Handle zoom events */
 function handleZoom(event) {
     const mode = _.result(event.target, 'id', '');
     setZoomLevel(mode);
     applyZoomToElement();
 }
 
+/**
+ * Set the current zoom level, within limits
+ * @param {string} mode
+ */
 function setZoomLevel(mode) {
     let zIdx = zoomLevel;
 
@@ -66,17 +72,14 @@ function setZoomLevel(mode) {
     }
 }
 
-function setMetaBoardEl(el) {
-    metaBoardEl = el;
-}
-
+/**
+ * Apply a CSS transform to the meta board element
+ */
 function applyZoomToElement() {
     const scale = gConfig.zoom[zoomLevel].scale;
     const xformStr = [
         'scale(' + scale + ')',
         'translate(0px, ' + gConfig.zoom[zoomLevel].offset + ')'
     ].join(' ');
-    if (_.isFunction(metaBoardEl.css)) {
-        metaBoardEl.css('transform', xformStr);
-    }
+    Dom.findMetaEl().css('transform', xformStr);
 }
